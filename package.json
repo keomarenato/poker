@@ -2,6 +2,9 @@
   "name": "Back",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": "14.x"
+  },
   "license": "MIT",
   "scripts": {
     "dev": "ts-node-dev src/server.ts"
