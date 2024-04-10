@@ -8,6 +8,8 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+const port = process.env.PORT || 3333
+
 app.use(router)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
