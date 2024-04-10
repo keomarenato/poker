@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Campeonato {
+  id              Int                  @id @default(autoincrement())
+  nome            String
+  data            DateTime
+  participantes   CadastroUser[]       @relation("Participacao")
+  partidas        Partida[]
+  registro        RegistroCampeonato?  // Relação um-para-um para detalhes do campeonato
+  valorTotal      Float?               // Opcional, será preenchido após o cálculo do valor total das partidas
+  deletado        Boolean              @default(false)
+}
+
+model CadastroUser {
+  id                     Int                @id @default(autoincrement())
+  nome                   String
+  fone                   Int
+  cpf                    Int
+  cep                    String
+  logradouro             String
+  numero                 String
+  bairro                 String
+  localidade             String
+  uf                     String
+  participacoes          Campeonato[]       @relation("Participacao")
+  partidas               Partida[]          @relation("ParticipantesPartida")
+}
+
+model User {
+   id        Int       @id @default(autoincrement())
+   name      String
+   email     String
+   password  String
+   created_at DateTime? @default(now())
+   updated_at DateTime? @default(now())
+}
+
+model Partida {
+  id             Int             @id @default(autoincrement())
+  campeonato     Campeonato      @relation(fields: [campeonatoId], references: [id])
+  campeonatoId   Int
+  data           DateTime        // Adicionando campo data
+  valor          Float ?          // Adicionando campo valor
+  participantes  CadastroUser[]  @relation("ParticipantesPartida")
+}
+
+model RegistroCampeonato {
+  id             Int        @id @default(autoincrement())
+  campeonatoId   Int        @unique
+  detalhes       String?     
+  campeonato     Campeonato @relation(fields: [campeonatoId], references: [id])
+  valorTotal     Float?  
+}
